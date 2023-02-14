@@ -1,0 +1,41 @@
+#! /bin/sh
+
+
+export RBW_PROFILE="$1"
+#Profile settings saved in ~/.config/rbw-<profilename>
+
+
+menu="kickoff --from-stdin --stdout -p $1"
+#menu="bemenu -b -l 15 -p "$1" --tf "#f25805" --hf "#ff0000" --bdr "#ff0000" --nf "#f25805" --af "#f25805" -B 5 -M 2 "
+
+bwstatus=$(rbw unlocked 2>&1 1>/dev/null)
+
+if [ "$bwstatus" = "rbw unlocked: agent is locked" ];
+  then
+    rbw unlock   
+fi
+
+selection1=$( ( printf "View/Type Individual Entries\nOTP Code\n" && rbw ls ) | $menu )
+
+if [ "$selection1" = "View/Type Individual Entries" ];
+
+  then
+     selection2=$( rbw ls | $menu )
+     selectionfull=$( rbw get "$selection2" --full |  sed '1 s/^.*$/Password: ******/' | $menu )
+      if [ "$selectionfull" =   "Password: ******"  ];
+        then
+          wtype $( rbw get "$selection2" )
+        else
+          selectiontype=$( printf "$selectionfull" | sed 's/.*: //' )
+          wtype $selectiontype
+      fi
+
+    elif [ "$selection1" = "OTP Code" ];
+        then
+            wtype "$( rbw code $(rbw ls | $menu) )"
+    file
+
+  else
+      wtype $( rbw get "$selection1" --full | grep Username: | sed 's/Username: //') -k tab $( rbw get "$selection1" ) -k return
+
+fi
