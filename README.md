@@ -12,4 +12,7 @@ With the variable set, running the "rbw config set" commands will save your prof
 Always specify the \<profileName\> when calling the script - ex: bw-at personal or bw-at work
 The RBW_Profile variable will then be set. Bind it to a shortcut!
 
+Allows to autotype username and password into browser logins, select and type individual entries, and select and type totp codes.
+Unable to add entries. rbw allows to add entries but does not seem to sync them to the server.
+
 
