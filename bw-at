@@ -5,7 +5,7 @@ export RBW_PROFILE="$1"
 #Profile settings saved in ~/.config/rbw-<profilename>
 
 
-menu="kickoff --from-stdin --stdout -p $1"
+menu="kickoff --from-stdin --stdout -p "$1\>\>" "
 #menu="bemenu -b -l 15 -p "$1" --tf "#f25805" --hf "#ff0000" --bdr "#ff0000" --nf "#f25805" --af "#f25805" -B 5 -M 2 "
 
 bwstatus=$(rbw unlocked 2>&1 1>/dev/null)
@@ -15,7 +15,7 @@ if [ "$bwstatus" = "rbw unlocked: agent is locked" ];
     rbw unlock   
 fi
 
-selection1=$( ( printf "View/Type Individual Entries\nOTP Code\n" && rbw ls ) | $menu )
+selection1=$( ( printf "View/Type Individual Entries\nOTP Code\nGenerate Password\nSync Vault\n---------\n" && rbw ls ) | $menu )
 
 if [ "$selection1" = "View/Type Individual Entries" ];
 
@@ -33,6 +33,16 @@ if [ "$selection1" = "View/Type Individual Entries" ];
     elif [ "$selection1" = "OTP Code" ];
         then
             wtype "$( rbw code $(rbw ls | $menu) )"
+    file
+
+    elif [ "$selection1" = "Generate Password" ];
+        then
+            wl-copy "$(rbw generate  20)"
+    file
+
+    elif [ "$selection1" = "Sync Vault" ];
+        then
+            rbw sync
     file
 
   else
