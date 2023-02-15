@@ -1,7 +1,7 @@
 # bitwarden-at
 Small kickoff|bemenu|dmenu|rofi bitwarden autotype script
 
-Inspired from [keepmenu](https://github.com/firecat53/keepmenu). Needed something faster than the official bw cli. 
+Inspired from [keepmenu](https://github.com/firecat53/keepmenu) & [bitwarden-menu](https://github.com/firecat53/bitwarden-menu) Needed something faster than the official bw cli. 
 
 Uses [rbw](https://github.com/doy/rbw)-unofficial bitwarden cli, with [PR93](https://github.com/doy/rbw/pull/93) to allow for multiple profiles, and [kickoff](https://github.com/j0ru/kickoff) - a dmenu/bemenu/rofi like launcher written in rust. (Although bemenu/dmenu/rofi could be used.)
 
