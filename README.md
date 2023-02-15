@@ -7,7 +7,7 @@ Uses [rbw](https://github.com/doy/rbw)-unofficial bitwarden cli, with [PR93](htt
 
 
 After installing rbw and applying the patch in PR93. The RBW_Profile=\<profileName\> env variable can be set. 
-With the variable set, running the "rbw config set" commands will save your profile settings in ~/.config/rbw-<profileName>
+With the variable set, running the "rbw config set" commands will save your profile settings in ~/.config/rbw-\<profileName\>
 
 Always specify the <profileName> when calling the script - ex: bw-at personal or bw-at work
 The RBW_Profile variable will then be set. 
