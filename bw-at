@@ -8,44 +8,42 @@ export RBW_PROFILE="$1"
 menu="kickoff --from-stdin --stdout -p "$1\>\>" "
 #menu="bemenu -b -l 15 -p "$1" --tf "#f25805" --hf "#ff0000" --bdr "#ff0000" --nf "#f25805" --af "#f25805" -B 5 -M 2 "
 
-bwstatus=$(rbw unlocked 2>&1 1>/dev/null)
+rbw unlock   
+    if [ $? = 1 ]; then
+	    exit
+    fi
 
-if [ "$bwstatus" = "rbw unlocked: agent is locked" ];
-  then
-    rbw unlock   
-fi
+selection1=$( ( printf "View/Type Individual Entries\nOTP Code\nGenerate Password\nSync Vault\nLock Vault\n---------\n" && rbw ls ) | $menu )
 
-selection1=$( ( printf "View/Type Individual Entries\nOTP Code\nGenerate Password\nSync Vault\n---------\n" && rbw ls ) | $menu )
+case $selection1 in
+     "View/Type Individual Entries" )
+         selection2=$( rbw ls | $menu )
+         selectionfull=$( rbw get "$selection2" --full |  sed '1 s/^.*$/Password: ******/' | $menu )
+           if [ "$selectionfull" =   "Password: ******"  ];
+           then
+             wtype $( rbw get "$selection2" )
+           else
+            selectiontype=$( printf "$selectionfull" | sed 's/.*: //' )
+            wtype $selectiontype
+           fi
+           ;;
 
-if [ "$selection1" = "View/Type Individual Entries" ];
+     "OTP Code" )
+           wtype "$( rbw code "$(rbw ls | $menu)" )"
+           ;;
 
-  then
-     selection2=$( rbw ls | $menu )
-     selectionfull=$( rbw get "$selection2" --full |  sed '1 s/^.*$/Password: ******/' | $menu )
-      if [ "$selectionfull" =   "Password: ******"  ];
-        then
-          wtype $( rbw get "$selection2" )
-        else
-          selectiontype=$( printf "$selectionfull" | sed 's/.*: //' )
-          wtype $selectiontype
-      fi
-
-    elif [ "$selection1" = "OTP Code" ];
-        then
-            wtype "$( rbw code $(rbw ls | $menu) )"
-    file
-
-    elif [ "$selection1" = "Generate Password" ];
-        then
-            wl-copy "$(rbw generate  20)"
-    file
-
-    elif [ "$selection1" = "Sync Vault" ];
-        then
-            rbw sync
-    file
-
-  else
-      wtype $( rbw get "$selection1" --full | grep Username: | sed 's/Username: //') -k tab $( rbw get "$selection1" ) -k return
-
-fi
+     "Generate Password" )
+           wl-copy "$(rbw generate  20)"
+           ;;
+    
+     "Sync Vault" )
+           rbw sync
+           ;;
+    
+     "Lock Vault" )
+           rbw lock
+           ;;
+     * )
+           wtype $( rbw get "$selection1" --full | grep Username: | sed 's/Username: //') -k tab $( rbw get "$selection1" ) -k return
+           ;;
+esac
